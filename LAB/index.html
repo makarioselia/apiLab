@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
+
+  <div class="bg-white p-4 rounded shadow-sm" style="width: 100%; max-width: 400px;">
+    <h2 class="text-center mb-4">Login</h2>
+
+    <div class="mb-3">
+      <label for="username" class="form-label">Username:</label>
+      <input type="text" id="username" class="form-control" placeholder="Enter your username" />
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" id="password" class="form-control" placeholder="Enter your password" />
+    </div>
+
+    <div class="d-grid mb-3">
+      <button onclick="Login()" class="btn btn-primary">Login</button>
+    </div>
+
+    <div id="demo" class="text-center text-danger mt-2"></div>
+  </div>
+
+  <script>
+    function Login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const xhttp = new XMLHttpRequest();
+      xhttp.open("POST", "http://localhost:5238/api/Account/Login", true);
+      xhttp.setRequestHeader("Content-Type", "application/json");
+      xhttp.send(JSON.stringify({
+        UserTryLoginName: username,
+        Password: password
+      }));
+      xhttp.onreadystatechange = function () {
+        if (this.readyState === 4) {
+          if (this.status === 200) {
+            console.log(this.status);
+
+            const response = JSON.parse(this.responseText);
+            console.log(response);
+
+            localStorage.setItem("PersonToken", response.token);
+
+
+            document.getElementById("demo").innerHTML = "Login successful!";
+            window.location.href = "product.html";
+          } else if (this.status === 400) {
+            document.getElementById("demo").innerHTML = "Login failed. Status: " + this.status;
+
+          }
+        }
+      };
+
+      
+    }
+
+  </script>
+</body>
+
+</html>
